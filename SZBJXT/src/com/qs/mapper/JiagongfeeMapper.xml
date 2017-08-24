@@ -1,0 +1,61 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" 
+"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<!-- 
+	namespace：必须与对应的接口全类名一致
+	id:必须与对应接口的某个对应的方法名一致
+	
+ -->
+<mapper namespace="com.qs.mapper.JiagongfeeMapper">
+	
+	<select id="findAll" resultType="JiagongfeeInfo" >
+		SELECT * FROM(
+    SELECT TOP ${endNumber} ROW_NUMBER() OVER(ORDER BY ID ASC) AS ROWID,* 
+        FROM initializeJiagong_fee) AS TEMP1 
+    WHERE ROWID>#{startNumber}
+	</select>
+	
+	<select id="totalJiagongfee" resultType="int">
+		select count(*) from initializeJiagong_fee
+	</select>
+	
+	 <update id="updateeditInfo" parameterType="JiagongfeeInfo">
+		update initializeJiagong_fee set danjia=#{danjia},sunhao=#{sunhao},
+		jiagong_fee=#{jiagong_fee},edit_time=#{edit_time},
+		edit_people=#{edit_people},state=#{state} where id=#{id}
+	</update>
+	
+	 <update id="updatesubInfo" parameterType="JiagongfeeInfo">
+		update initializeJiagong_fee setdanjia=#{danjia},sunhao=#{sunhao},
+		jiagong_fee=#{jiagong_fee},edit_time=#{edit_time},sub_time=#{sub_time},
+		edit_people=#{edit_people},sub_people=#{sub_people},state=#{state} where id=#{id}
+	</update>
+	 
+	 <select id="findByCondition" resultType="JiagongfeeInfo" parameterType="map">
+		select * from initializeJiagong_fee
+		  <where>
+                         <if test="fee_type != null and fee_type != ''">
+                            and fee_type like '%'+ #{fee_type} +'%'
+                         </if>  
+                         <if test="jiagong_type != null and jiagong_type != ''">
+                            and jiagong_type like '%'+ #{jiagong_type} +'%'
+                         </if>                                     
+           </where>                
+	</select>
+	
+	<select id="countConditionJiagongfee" resultType="int" parameterType="map">
+		select count(*) from initializeJiagong_fee
+		   <where>
+                         <if test="fee_type != null and fee_type != ''">
+                            and fee_type like '%'+ #{fee_type} +'%'
+                         </if>  
+                         <if test="jiagong_type != null and jiagong_type != ''">
+                            and jiagong_type like '%'+ #{jiagong_type} +'%'
+                         </if>                      
+           </where>                
+	</select>
+	
+	
+</mapper>
+
+

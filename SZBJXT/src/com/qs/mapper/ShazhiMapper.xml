@@ -1,0 +1,89 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" 
+"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<!-- 
+	namespace：必须与对应的接口全类名一致
+	id:必须与对应接口的某个对应的方法名一致
+	
+ -->
+<mapper namespace="com.qs.mapper.ShazhiMapper">
+	
+	<select id="findAll" resultType="ShazhiInfo" >
+		SELECT * FROM(
+    SELECT TOP ${endNumber} ROW_NUMBER() OVER(ORDER BY ID ASC) AS ROWID,* 
+        FROM initializeShaZhi_price) AS TEMP1 
+    WHERE ROWID>#{startNumber}
+	</select>
+	
+	<select id="totalShazhiInfo" resultType="int">
+		select count(*) from initializeShaZhi_price
+	</select>
+	 
+	<insert id="addshazhifromexcel" parameterType="ShazhiInfo" useGeneratedKeys="true" keyProperty="id">	  
+		insert into initializeShaZhi_price(yuanliao_id,shazhi) 
+		values(#{yuanliao_id},#{shazhi})
+	</insert>
+	
+	<insert id="addeditInfo" parameterType="ShazhiInfo" useGeneratedKeys="true" keyProperty="id">	  
+		insert into initializeShaZhi_price(yuanliao_id,shazhi,danjia,sunhao,shazhi_price,edit_time,edit_people,state) 
+		values(#{yuanliao_id},#{shazhi},#{danjia},#{sunhao},#{shazhi_price},#{edit_time},#{edit_people},#{state})
+	</insert>
+	
+	<insert id="addsubInfo" parameterType="ShazhiInfo" useGeneratedKeys="true" keyProperty="id">	  
+		insert into initializeShaZhi_price(yuanliao_id,shazhi,danjia,sunhao,shazhi_price,
+		edit_time,edit_people,sub_time,sub_people,state) 
+		values(#{yuanliao_id},#{shazhi},#{danjia},#{sunhao},#{shazhi_price},#{edit_time},
+		#{edit_people},#{sub_time},#{sub_people},#{state})
+	</insert>
+	
+	 <update id="updateeditInfo" parameterType="ShazhiInfo">
+		update initializeShaZhi_price set yuanliao_id=#{yuanliao_id},danjia=#{danjia},shazhi=#{shazhi},
+		sunhao=#{sunhao},shazhi_price=#{shazhi_price},edit_time=#{edit_time},
+		edit_people=#{edit_people},state=#{state} where id=#{id}
+	</update>
+	
+	 <update id="updatesubInfo" parameterType="ShazhiInfo">
+		update initializeShaZhi_price set yuanliao_id=#{yuanliao_id},danjia=#{danjia},shazhi=#{shazhi},
+		sunhao=#{sunhao},shazhi_price=#{shazhi_price},edit_time=#{edit_time},sub_time=#{sub_time},
+		edit_people=#{edit_people},sub_people=#{sub_people},state=#{state} where id=#{id}
+	</update>
+	
+	<delete id="delete" parameterType="int">
+		delete from initializeShaZhi_price where id=#{id}
+	</delete>
+	
+	<select id="findByCondition" resultType="ShazhiInfo" parameterType="map">
+		select * from initializeShaZhi_price
+		  <where>
+                         <if test="yuanliao_id != null and yuanliao_id != ''">
+                            and yuanliao_id like '%'+ #{yuanliao_id} +'%'
+                         </if>
+                         <if test="shazhi != null and shazhi != ''">
+                             and shazhi like '%'+ #{shazhi} +'%'
+                         </if>                         
+           </where>                
+	</select>
+	
+	<select id="countConditionShazhi" resultType="int" parameterType="map">
+		select count(*) from initializeShaZhi_price
+		  <where>
+                         <if test="yuanliao_id != null and yuanliao_id != ''">
+                            and yuanliao_id like '%'+ #{yuanliao_id} +'%'
+                         </if>
+                         <if test="shazhi != null and shazhi != ''">
+                             and shazhi like '%'+ #{shazhi} +'%'
+                         </if>                         
+           </where>                
+	</select>
+	
+	
+	<select id="findshazhifee" resultType="ShazhiInfo" >		
+	select * from initializeShaZhi_price where yuanliao_id in    
+    <foreach collection="list" index="index" item="item" open="(" separator="," close=")">    
+        #{item}    
+    </foreach>  
+	</select>
+	
+</mapper>
+
+

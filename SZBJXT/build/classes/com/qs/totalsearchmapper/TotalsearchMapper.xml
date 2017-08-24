@@ -1,0 +1,23 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" 
+"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<!-- 
+	namespace：必须与对应的接口全类名一致
+	id:必须与对应接口的某个对应的方法名一致
+	
+ -->
+<mapper namespace="com.qs.totalsearchmapper.TotalsearchMapper">
+	
+	 
+	
+	<select id="findgongyidanInfoAll" resultType="java.util.HashMap">
+		select BH,GYDID,PBMC from szzz.T_JS_GY_ZZGYK where BH = #{cloth_id}
+	</select>
+	
+	<select id="findyuanliaoInfoAll" resultType="java.util.HashMap">
+		select YLBH,GYDID,SJBL from szzz.T_JS_GY_YLXX where GYDID = #{GYDID}
+	</select>
+	
+	 
+	
+</mapper>

@@ -1,0 +1,86 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" 
+"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<!-- 
+	namespace：必须与对应的接口全类名一致
+	id:必须与对应接口的某个对应的方法名一致
+	
+ -->
+<mapper namespace="com.qs.mapper.ZhizaoMapper">
+	
+	<select id="findAll" resultType="ZhizaoInfo" >
+		SELECT * FROM(
+    SELECT TOP ${endNumber} ROW_NUMBER() OVER(ORDER BY ID ASC) AS ROWID,* 
+        FROM initializezhizao) AS TEMP1 
+    WHERE ROWID>#{startNumber}
+	</select>
+	
+	<select id="totalZhizaoInfo" resultType="int">
+		select count(*) from initializezhizao
+	</select>
+	<select id="findByclothid" resultType="ZhizaoInfo">
+		select * from initializezhizao where cloth_id = #{cloth_id}
+	</select>
+	  
+	 <insert id="addzhizaofromexcel" parameterType="ZhizaoInfo" useGeneratedKeys="true" keyProperty="id">	  
+		insert into initializezhizao(cloth_id,model) 
+		values(#{cloth_id},#{model})
+	</insert>
+	<insert id="addeditInfo" parameterType="ZhizaoInfo" useGeneratedKeys="true" keyProperty="id">	  
+		insert into initializezhizao(cloth_id,model,output,sunhao,zhizhao_price,zhizao_fee,
+		edit_time,edit_people,state) 
+		values(#{cloth_id},#{model},#{output},#{sunhao},#{zhizhao_price},#{zhizao_fee},#{edit_time},
+		#{edit_people},#{state})
+	</insert>
+	
+	<insert id="addsubInfo" parameterType="ZhizaoInfo" useGeneratedKeys="true" keyProperty="id">	  
+		insert into initializezhizao(cloth_id,model,output,sunhao,zhizhao_price,zhizao_fee,
+		edit_time,edit_people,sub_time,sub_people,state) 
+		values(#{cloth_id},#{model},#{output},#{sunhao},#{zhizhao_price},#{zhizao_fee},#{edit_time},
+		#{edit_people},#{sub_time},#{sub_people},#{state})
+	</insert>
+	
+	 <update id="updateeditInfo" parameterType="ZhizaoInfo">
+		update initializezhizao set cloth_id=#{cloth_id},model=#{model},output=#{output},
+		zhizhao_price=#{zhizhao_price},sunhao=#{sunhao},zhizao_fee=#{zhizao_fee},edit_time=#{edit_time},
+		edit_people=#{edit_people},state=#{state} where id=#{id}
+	</update>
+	
+	<update id="updatesubInfo" parameterType="ZhizaoInfo">
+		update initializezhizao set cloth_id=#{cloth_id},model=#{model},output=#{output},
+		zhizhao_price=#{zhizhao_price},sunhao=#{sunhao},zhizao_fee=#{zhizao_fee},edit_time=#{edit_time},sub_time=#{sub_time},
+		edit_people=#{edit_people},sub_people=#{sub_people},state=#{state} where id=#{id}
+	</update>
+	
+	<delete id="delete" parameterType="int">
+		delete from initializezhizao where id=#{id}
+	</delete>
+	
+	<select id="findByCondition" resultType="ZhizaoInfo" parameterType="map">
+		select * from initializezhizao
+		  <where>
+                         <if test="cloth_id != null and cloth_id != ''">
+                            and cloth_id like '%'+ #{cloth_id} +'%'
+                         </if>
+                         <if test="shazhi != null and shazhi != ''">
+                             and model like '%'+ #{model} +'%'
+                         </if>                         
+           </where>                
+	</select>
+	
+	<select id="countConditionZhizao" resultType="int" parameterType="map">
+		select count(*) from initializezhizao
+		  <where>
+                         <if test="cloth_id != null and cloth_id != ''">
+                            and cloth_id like '%'+ #{cloth_id} +'%'
+                         </if>
+                         <if test="shazhi != null and shazhi != ''">
+                             and model like '%'+ #{model} +'%'
+                         </if>                         
+           </where>                
+	</select>
+	
+	
+</mapper>
+
+

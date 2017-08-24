@@ -1,0 +1,74 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" 
+"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<!-- 
+	namespace：必须与对应的接口全类名一致
+	id:必须与对应接口的某个对应的方法名一致
+	
+ -->
+<mapper namespace="com.qs.mapper.RanzhengMapper">
+	
+	<select id="findAll" resultType="RanzhengInfo" >
+		SELECT * FROM(
+    SELECT TOP ${endNumber} ROW_NUMBER() OVER(ORDER BY ID ASC) AS ROWID,* 
+        FROM initializeRanzheng) AS TEMP1 
+    WHERE ROWID>#{startNumber}
+	</select>
+	
+	<select id="totalRanzhengInfo" resultType="int">
+		select count(*) from initializeRanzheng
+	</select>
+	<select id="findByclothid" resultType="RanzhengInfo">
+		select * from initializeRanzheng where cloth_id = #{cloth_id}
+	</select>
+	<insert id="addeditInfo" parameterType="RanzhengInfo" useGeneratedKeys="true" keyProperty="id">	  
+		insert into initializeRanzheng(cloth_id,danjia,sunhao,ranzheng_fee,
+		edit_time,edit_people,state) 
+		values(#{cloth_id},#{danjia},#{sunhao},#{ranzheng_fee},#{edit_time},
+		#{edit_people},#{state})
+	</insert>
+	
+	<insert id="addsubInfo" parameterType="RanzhengInfo" useGeneratedKeys="true" keyProperty="id">	  
+		insert into initializeRanzheng(cloth_id,danjia,sunhao,ranzheng_fee,
+		edit_time,edit_people,sub_time,sub_people,state) 
+		values(#{cloth_id},#{danjia},#{sunhao},#{ranzheng_fee},#{edit_time},
+		#{edit_people},#{sub_time},#{sub_people},#{state})
+	</insert>
+	
+	<delete id="delete" parameterType="int">
+		delete from initializeRanzheng where id=#{id}
+	</delete>
+	 <update id="updateeditInfo" parameterType="RanzhengInfo">
+		update initializeRanzheng set cloth_id=#{cloth_id},danjia=#{danjia},sunhao=#{sunhao},
+		ranzheng_fee=#{ranzheng_fee},edit_time=#{edit_time},
+		edit_people=#{edit_people},state=#{state} where id=#{id}
+	</update>
+	
+	 <update id="updatesubInfo" parameterType="RanzhengInfo">
+		update initializeRanzheng set cloth_id=#{cloth_id},danjia=#{danjia},sunhao=#{sunhao},
+		ranzheng_fee=#{ranzheng_fee},edit_time=#{edit_time},sub_time=#{sub_time},
+		edit_people=#{edit_people},sub_people=#{sub_people},state=#{state} where id=#{id}
+	</update>
+	 
+	 <select id="findByCondition" resultType="RanzhengInfo" parameterType="map">
+		select * from initializeRanzheng
+		  <where>
+                         <if test="cloth_id != null and cloth_id != ''">
+                            and cloth_id like '%'+ #{cloth_id} +'%'
+                         </if>                                           
+           </where>                
+	</select>
+	
+	<select id="countConditionRanzheng" resultType="int" parameterType="map">
+		select count(*) from initializeRanzheng
+		   <where>
+                         <if test="cloth_id != null and cloth_id != ''">
+                            and cloth_id like '%'+ #{cloth_id} +'%'
+                         </if>                       
+           </where>                
+	</select>
+	
+	
+</mapper>
+
+

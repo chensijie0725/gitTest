@@ -1,0 +1,67 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" 
+"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<!-- 
+	namespace：必须与对应的接口全类名一致
+	id:必须与对应接口的某个对应的方法名一致
+	
+ -->
+<mapper namespace="com.qs.mapper.UserMapper">
+	
+	<insert id="save" parameterType="User" useGeneratedKeys="true" keyProperty="id">	  
+		insert into user1(user_name,password,power) values(#{user_name},#{password},#{power})
+	</insert>
+	
+	<update id="update" parameterType="User">
+		update user1 set user_name=#{user_name},password=#{password},power=#{power} where id=#{id}
+	</update>
+	
+	<delete id="delete" parameterType="int">
+		delete from user1 where id=#{id}
+	</delete>
+	
+	 <!-- mybsits_config中配置的alias类别名,也可直接配置resultType为类路劲 -->  
+	<select id="findById" parameterType="int" resultType="User">
+		select  id,user_name ,user_age  from user1 where id=#{id}
+	</select>
+	
+	<select id="findAll" resultType="User" >
+		SELECT * FROM(
+    SELECT TOP ${endNumber} ROW_NUMBER() OVER(ORDER BY ID ASC) AS ROWID,* 
+        FROM user1) AS TEMP1 
+    WHERE ROWID>#{startNumber}
+	</select>
+	
+	<select id="totalUser" resultType="int">
+		select count(*) from user1
+	</select>
+	
+	<select id="findByCondition" resultType="User" parameterType="map">
+		select * from user1
+		  <where>
+                         <if test="user_name != null and user_name != ''">
+                            and user_name like '%'+ #{user_name} +'%'
+                         </if>
+                         <if test="power != null and power != ''">
+                             and power like '%'+ #{power} +'%'
+                         </if>                         
+           </where>                
+	</select>
+	
+	<select id="countConditionUser" resultType="int" parameterType="map">
+		select count(*) from user1
+		<where>
+                         <if test="user_name != null and user_name != ''">
+                            and user_name like '%'+ #{user_name} +'%'
+                         </if>
+                         <if test="power != null and power != ''">
+                             and power like '%'+ #{power} +'%'
+                         </if>                         
+           </where>  
+	</select>
+	
+	<select id="findByuserName" resultType="User" parameterType="String">
+		select * from user1 where user_name = #{user_name}
+	</select>
+	 
+</mapper>
